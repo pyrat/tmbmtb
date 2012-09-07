@@ -48,9 +48,9 @@ book.mobi:
 book.epub:
 	@echo "\n... generating $@"
 	ebook-convert book.html book.epub \
-		--title "Mastering Node" \
+		--title "Tour de Mt Blanc Mountain Bike" \
 		--no-default-epub-cover \
-		--authors "TJ Holowaychuk" \
+		--authors "Alastair Brunton and Andrew Brunton" \
 		--language en \
 		--cover pages/cover.jpg
 
