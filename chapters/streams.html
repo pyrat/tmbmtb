@@ -1,0 +1,48 @@
+<div class='mp'>
+<h1>Streams</h1>
+<p> Streams are an important concept in node. The stream API is a unified way to handle stream-like data. For example, data can be streamed to a file, streamed to a socket to respond to an HTTP request, or streamed from a read-only source such as <em>stdin</em>. For now, we'll concentrate on the API, leaving stream specifics to later chapters.</p>
+
+<h2 id="Readable-Streams">Readable Streams</h2>
+
+<p> Readable streams such as an HTTP request inherit from <code>EventEmitter</code> in order to expose incoming data through events. The first of these events is the <em>data</em> event, which is an arbitrary chunk of data passed to the event handler as a <code>Buffer</code> instance.</p>
+
+<pre><code>req.on('data', function(buf){
+    // Do something with the Buffer
+});
+</code></pre>
+
+<p>As we know, we can call <code>toString()</code> on a buffer to return a string representation of the binary data. Likewise, we can call <code>setEncoding()</code> on a stream, after which the <em>data</em> event will emit strings.</p>
+
+<pre><code>req.setEncoding('utf8');
+req.on('data', function(str){
+    // Do something with the String
+});
+</code></pre>
+
+<p>Another important event is  <em>end</em>, which represents the ending of <em>data</em> events. For example, here's an HTTP echo server, which simply "pumps" the request body data through to the response. So if we POST "hello world", our response will be "hello world".</p>
+
+<pre><code>var http = require('http');
+
+http.createServer(function(req, res){
+    res.writeHead(200);
+    req.on('data', function(data){
+        res.write(data);
+    });
+    req.on('end', function(){
+        res.end();
+    });
+}).listen(3000);
+</code></pre>
+
+<p>The <em>sys</em> module actually has a function designed specifically for this "pumping" action, aptly named <code>sys.pump()</code>. It accepts a read stream as the first argument, and write stream as the second.</p>
+
+<pre><code>var http = require('http'),
+    sys = require('sys');
+
+http.createServer(function(req, res){
+    res.writeHead(200);
+    sys.pump(req, res);
+}).listen(3000);
+</code></pre>
+
+</div>
